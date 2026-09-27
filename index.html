@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rainy Night</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="scene" data-weather="rain">
+      <div class="sky-glow glow-1"></div>
+      <div class="sky-glow glow-2"></div>
+      <div class="sun" aria-hidden="true"></div>
+      <div class="moon"></div>
+      <div class="cloud cloud-one" aria-hidden="true"></div>
+      <div class="cloud cloud-two" aria-hidden="true"></div>
+      <canvas id="rainCanvas"></canvas>
+      <div class="lightning" aria-hidden="true"></div>
+      <div class="city-silhouette"></div>
+      <div class="title-wrap">
+        <p class="eyebrow" id="weatherEyebrow">MOONLIT RAIN</p>
+        <h1 id="weatherTitle">静夜微雨</h1>
+        <p class="weather-description" id="weatherDescription">让雨声，替夜晚慢下来</p>
+      </div>
+      <section class="weather-panel" aria-label="天气切换">
+        <p class="panel-label">天气 · WEATHER</p>
+        <div class="weather-options" role="group" aria-label="选择天气">
+          <button class="weather-button" type="button" data-weather-button="sunny" aria-pressed="false">
+            <span class="weather-icon" aria-hidden="true">☀</span>
+            <span>晴天</span>
+          </button>
+          <button class="weather-button" type="button" data-weather-button="cloudy" aria-pressed="false">
+            <span class="weather-icon" aria-hidden="true">☁</span>
+            <span>多云</span>
+          </button>
+          <button class="weather-button is-active" type="button" data-weather-button="rain" aria-pressed="true">
+            <span class="weather-icon" aria-hidden="true">☂</span>
+            <span>小雨</span>
+          </button>
+          <button class="weather-button" type="button" data-weather-button="storm" aria-pressed="false">
+            <span class="weather-icon" aria-hidden="true">ϟ</span>
+            <span>雷雨</span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

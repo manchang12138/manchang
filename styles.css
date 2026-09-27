@@ -1,0 +1,407 @@
+:root {
+  --bg-top: #07111f;
+  --bg-mid: #0c1d2f;
+  --bg-bottom: #162d45;
+  --moon: #f7f1d0;
+  --rain: rgba(140, 210, 255, 0.9);
+  --glow: rgba(131, 189, 255, 0.35);
+  --text: #eaf6ff;
+  --muted: #b5d7f7;
+  --scene-top: #07111f;
+  --scene-mid: #0c1d2f;
+  --scene-bottom: #162d45;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: linear-gradient(180deg, var(--bg-top), var(--bg-mid) 35%, var(--bg-bottom));
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+.scene {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 10%, rgba(255,255,255,0.08), transparent 25%),
+    linear-gradient(180deg, var(--scene-top), var(--scene-mid) 48%, var(--scene-bottom));
+  transition: background 1.2s ease;
+}
+
+.scene[data-weather="sunny"] {
+  --scene-top: #4b82a3;
+  --scene-mid: #84b2c3;
+  --scene-bottom: #e2b98d;
+  --text: #fff9e9;
+  --muted: #f5dfb7;
+}
+
+.scene[data-weather="cloudy"] {
+  --scene-top: #27394b;
+  --scene-mid: #536879;
+  --scene-bottom: #9a9b94;
+  --text: #f1f3f2;
+  --muted: #d5e0e4;
+}
+
+.scene[data-weather="storm"] {
+  --scene-top: #070b16;
+  --scene-mid: #111a2b;
+  --scene-bottom: #273346;
+  --text: #e7edfa;
+  --muted: #aabbd4;
+}
+
+.sky-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0.6;
+}
+
+.glow-1 {
+  width: 28vw;
+  height: 28vw;
+  background: rgba(115, 167, 255, 0.35);
+  left: 18%;
+  top: 12%;
+}
+
+.glow-2 {
+  width: 36vw;
+  height: 36vw;
+  background: rgba(84, 135, 210, 0.2);
+  right: 12%;
+  top: 8%;
+}
+
+.moon {
+  position: absolute;
+  top: 11vh;
+  right: 18vw;
+  width: 11vw;
+  height: 11vw;
+  min-width: 80px;
+  min-height: 80px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fffef6, var(--moon) 62%, #dfe7f7 100%);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.35), 0 0 80px rgba(255, 235, 170, 0.18);
+  transition: opacity 0.6s ease, transform 0.8s ease;
+}
+
+.moon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(11, 17, 28, 0.08);
+  transform: translate(22%, 12%);
+}
+
+#rainCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: transparent;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.sun {
+  position: absolute;
+  top: 13vh;
+  right: 19vw;
+  width: clamp(76px, 10vw, 142px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff6ce, #ffd78c 70%, #f1ae72);
+  box-shadow: 0 0 48px rgba(255, 221, 152, 0.56), 0 0 130px rgba(255, 207, 130, 0.38);
+  opacity: 0;
+  transform: translateY(12px) scale(0.9);
+  transition: opacity 0.7s ease, transform 0.9s ease;
+}
+
+.cloud {
+  position: absolute;
+  z-index: 1;
+  width: clamp(150px, 22vw, 300px);
+  height: clamp(45px, 7vw, 92px);
+  border-radius: 100px;
+  background: linear-gradient(180deg, rgba(213, 228, 235, 0.82), rgba(134, 159, 178, 0.72));
+  filter: drop-shadow(0 14px 28px rgba(15, 31, 45, 0.18));
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.8s ease, transform 1s ease;
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  bottom: 28%;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.cloud::before {
+  left: 17%;
+  width: 42%;
+  aspect-ratio: 1;
+}
+
+.cloud::after {
+  left: 43%;
+  width: 54%;
+  aspect-ratio: 1;
+}
+
+.cloud-one {
+  top: 25%;
+  left: 14%;
+}
+
+.cloud-two {
+  top: 39%;
+  right: 8%;
+  width: clamp(180px, 28vw, 370px);
+  transform: translateY(-12px) scale(0.84);
+}
+
+.scene[data-weather="cloudy"] .cloud,
+.scene[data-weather="storm"] .cloud {
+  opacity: 0.8;
+  transform: translateY(0);
+}
+
+.scene[data-weather="storm"] .cloud {
+  opacity: 0.94;
+  background: linear-gradient(180deg, rgba(91, 109, 132, 0.92), rgba(43, 55, 74, 0.92));
+}
+
+.scene[data-weather="sunny"] .sun {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.scene[data-weather="sunny"] .moon {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.lightning {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  pointer-events: none;
+  background: rgba(205, 220, 255, 0);
+}
+
+.lightning.is-flashing {
+  animation: lightning-flash 520ms ease-out;
+}
+
+@keyframes lightning-flash {
+  0%, 100% { background: rgba(205, 220, 255, 0); }
+  12% { background: rgba(205, 220, 255, 0.28); }
+  22% { background: rgba(205, 220, 255, 0.02); }
+  34% { background: rgba(205, 220, 255, 0.2); }
+  48% { background: rgba(205, 220, 255, 0); }
+}
+
+.city-silhouette {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26vh;
+  min-height: 140px;
+  background:
+    linear-gradient(180deg, rgba(15, 23, 36, 0.15), rgba(7, 12, 18, 0.7)),
+    linear-gradient(90deg,
+      rgba(15,25,36,0.95) 0%,
+      rgba(15,25,36,0.95) 12%,
+      rgba(10,15,20,0.9) 12%,
+      rgba(10,15,20,0.9) 18%,
+      rgba(15,25,36,0.95) 18%,
+      rgba(15,25,36,0.95) 22%,
+      rgba(9,16,24,0.96) 22%,
+      rgba(9,16,24,0.96) 30%,
+      rgba(15,25,36,0.95) 30%,
+      rgba(15,25,36,0.95) 42%,
+      rgba(9,16,24,0.96) 42%,
+      rgba(9,16,24,0.96) 48%,
+      rgba(15,25,36,0.95) 48%,
+      rgba(15,25,36,0.95) 60%,
+      rgba(9,16,24,0.96) 60%,
+      rgba(9,16,24,0.96) 68%,
+      rgba(15,25,36,0.95) 68%,
+      rgba(15,25,36,0.95) 80%,
+      rgba(9,16,24,0.96) 80%,
+      rgba(9,16,24,0.96) 100%);
+  clip-path: polygon(0% 100%, 0% 58%, 6% 58%, 6% 40%, 10% 40%, 10% 65%, 15% 65%, 15% 24%, 22% 24%, 22% 60%, 26% 60%, 26% 36%, 32% 36%, 32% 64%, 39% 64%, 39% 20%, 46% 20%, 46% 58%, 53% 58%, 53% 28%, 59% 28%, 59% 68%, 64% 68%, 64% 35%, 72% 35%, 72% 60%, 78% 60%, 78% 18%, 84% 18%, 84% 54%, 92% 54%, 92% 40%, 100% 40%, 100% 100%);
+  opacity: 0.9;
+}
+
+.title-wrap {
+  position: absolute;
+  left: 8vw;
+  bottom: 14vh;
+  z-index: 2;
+  color: var(--text);
+  text-shadow: 0 0 18px rgba(170, 216, 255, 0.45);
+  transition: color 0.6s ease;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  letter-spacing: 0.6rem;
+  text-transform: uppercase;
+  font-size: clamp(0.6rem, 1vw, 0.8rem);
+  color: var(--muted);
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 5vw, 6rem);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.weather-description {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: clamp(0.8rem, 1.3vw, 1rem);
+  letter-spacing: 0.12em;
+  transition: color 0.6s ease;
+}
+
+.weather-panel {
+  position: absolute;
+  z-index: 3;
+  top: clamp(24px, 5vh, 54px);
+  left: clamp(22px, 5vw, 72px);
+  padding: 16px;
+  border: 1px solid rgba(222, 239, 255, 0.18);
+  border-radius: 20px;
+  background: rgba(12, 26, 42, 0.34);
+  box-shadow: 0 12px 40px rgba(3, 10, 20, 0.12);
+  backdrop-filter: blur(14px);
+}
+
+.panel-label {
+  margin: 0 0 10px 4px;
+  color: rgba(231, 243, 255, 0.7);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+}
+
+.weather-options {
+  display: flex;
+  gap: 6px;
+}
+
+.weather-button {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  min-width: 64px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: 13px;
+  color: rgba(234, 246, 255, 0.78);
+  background: transparent;
+  font: inherit;
+  font-size: 0.76rem;
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.weather-button:hover {
+  color: #fff;
+  background: rgba(233, 245, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.weather-button:focus-visible {
+  outline: 2px solid #d7edff;
+  outline-offset: 3px;
+}
+
+.weather-button.is-active {
+  color: #fff;
+  border-color: rgba(222, 239, 255, 0.26);
+  background: rgba(216, 237, 255, 0.16);
+}
+
+.weather-icon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+.scene[data-weather="sunny"] .weather-panel {
+  background: rgba(48, 74, 90, 0.3);
+}
+
+@media (max-width: 768px) {
+  .moon {
+    right: 10vw;
+    top: 9vh;
+  }
+
+  .title-wrap {
+    left: 6vw;
+    bottom: 13vh;
+  }
+
+  h1 {
+    letter-spacing: 0.08em;
+  }
+
+  .weather-panel {
+    top: 20px;
+    left: 50%;
+    padding: 10px;
+    transform: translateX(-50%);
+  }
+
+  .weather-button {
+    min-width: 58px;
+    padding: 8px 9px;
+  }
+
+  .cloud-one {
+    top: 29%;
+    left: 3%;
+  }
+
+  .cloud-two {
+    top: 42%;
+    right: -8%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
